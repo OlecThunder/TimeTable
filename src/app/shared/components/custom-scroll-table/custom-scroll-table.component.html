@@ -1,0 +1,13 @@
+<mat-table #table mat-table [dataSource]="tableDataSource" class="table" (contentChanged)="onContentRendering.emit()" (scroll)="onTableScroll($event)">
+    <ng-container *ngFor="let dynamicColumn of tableColumns" [matColumnDef]="dynamicColumn.toString()">
+        <mat-header-cell *matHeaderCellDef class="table__header_cell">
+            <p class="text-capitalize-first">{{dynamicColumn | unixIntoReadable}}</p>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let item">
+            <span>{{item[dynamicColumn]}}</span>
+        </mat-cell>
+        </ng-container>
+    
+    <mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: tableColumns;" class="table__row"></mat-row>
+</mat-table>

@@ -1,6 +1,3 @@
-@import './styles/variables';
-@import './styles/global';
-
 * {
 box-sizing: border-box;
 -webkit-font-smoothing: antialiased;
@@ -11,7 +8,6 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
 }
 
 body { font-family: Roboto, sans-serif; }
@@ -25,4 +21,14 @@ a {
     &:focus, &:active, &:visited {
         text-decoration: none;
     }
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
 }
