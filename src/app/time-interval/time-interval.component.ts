@@ -17,11 +17,7 @@ export class TimeIntervalComponent implements OnInit, OnDestroy {
 
   private onDestroy$: Subject<void>;
 
-  // Temporary for measurements
-  private timer: number;
-
   constructor(private timeIntervalsService: TimeIntervalsService, private cdr: ChangeDetectorRef) {
-    this.timer = 0;
     this.tableColumns = [];
     this.timeIntervalControl = new FormControl();
     this.tableData$ = new BehaviorSubject<{ [key: string]: string }[]>([]);
@@ -42,9 +38,6 @@ export class TimeIntervalComponent implements OnInit, OnDestroy {
     this.timeIntervalControl.valueChanges
       .pipe(
         filter(Boolean),
-        tap(() => {
-          this.timer = performance.now()
-        }),
         switchMap((interval: number) => this.timeIntervalsService.getTableDataForInterval(interval)),
         takeUntil(this.onDestroy$)
       ).subscribe(({data, columns}: IntervalsTableDataResponse) => {
@@ -52,11 +45,5 @@ export class TimeIntervalComponent implements OnInit, OnDestroy {
         this.tableColumns = columns;
         this.cdr.markForCheck();
       })
-  }
-
-  // Temporary for measurements
-  public renderingFinished(): void {
-    const time = performance.now() - this.timer;
-    console.log('Timer:', 'Rendering', 'finished in', Math.round(time), 'ms');
   }
 }

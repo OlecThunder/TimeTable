@@ -1,5 +1,5 @@
 <cdk-virtual-scroll-viewport [style.height.px]="GRID_HEIGHT" (scroll)="updateTableOnHorizontalScroll($event)">
-    <table mat-table [dataSource]="dataSource" class="table" (contentChanged)="onContentRendering.emit()">
+    <table mat-table [dataSource]="dataSource" class="table">
         <ng-container *ngFor="let dynamicColumn of tableColumns" [matColumnDef]="dynamicColumn.toString()">
             <th mat-header-cell *matHeaderCellDef class="table__header_cell">
                 <p class="text-capitalize-first">{{dynamicColumn | unixIntoReadable}}</p>

@@ -19,7 +19,6 @@ import { TimeIntervalComponent } from './time-interval.component';
     ReactiveFormsModule,
     MatSelectModule,
     VirtualScrollTableModule
-  ],
-  providers: [],
+  ]
 })
 export class TimeIntervalModule { }

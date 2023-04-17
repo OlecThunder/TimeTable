@@ -1,5 +1,5 @@
 import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { map, Observable, combineLatest, tap, BehaviorSubject } from 'rxjs';
 import { TableVirtualScrollStrategy } from '../../services/table-vs-strategy.service';
 import { HorizontalScrollPagination } from './models/virtual-scroll.interface';
@@ -18,8 +18,6 @@ import { HorizontalScrollPagination } from './models/virtual-scroll.interface';
 export class VirtualScrollTableComponent implements OnInit, OnChanges {
   @Input() public tableData$: BehaviorSubject<{ [key: string]: string }[]>;
   @Input() public columnsToDisplay: string[] = [];
-
-  @Output() onContentRendering = new EventEmitter();
 
   private BUFFER_SIZE = 3;
   private ROW_HEIGHT = 52;
@@ -58,14 +56,13 @@ export class VirtualScrollTableComponent implements OnInit, OnChanges {
 
   private onTableDataChange(): void {
     this.dataSource = combineLatest([this.tableData$, this.scrollStrategy.scrolledIndexChange]).pipe(
-      map((value: any) => {
+      map((value: [{ [key: string]: string }[], number]) => {
         const start = Math.max(0, value[1] - this.BUFFER_SIZE);
         const end = Math.min(value[0].length, value[1] + this.verticalScrollRange);
 
         return value[0].slice(start, end);
-      },
+      }),
       tap(() => this.cdr.detectChanges())
-      )
     );
   }
 

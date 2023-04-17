@@ -3,7 +3,7 @@
 
   <mat-form-field appearance="fill">
     <mat-label>Time</mat-label>
-    <mat-select [formControl]="timeIntervalControl">
+    <mat-select [formControl]="timeIntervalControl" class="time-interval__select">
       <mat-option *ngFor="let timeInterval of availableTimeIntervals" [value]="timeInterval.value">
         {{timeInterval.label}}
       </mat-option>
