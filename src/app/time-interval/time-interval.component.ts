@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { filter, Subject, switchMap, tap, takeUntil } from 'rxjs';
+import { filter, Subject, switchMap, tap, takeUntil, BehaviorSubject } from 'rxjs';
 import { IntervalsTableDataResponse } from '../time-interval-selector/models/time-intervals.interface';
 import { TimeIntervalsService } from './services/time-interval.service';
 
@@ -10,19 +10,21 @@ import { TimeIntervalsService } from './services/time-interval.service';
   styleUrls: ['./time-interval.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TimeIntervalComponent implements OnInit {
+export class TimeIntervalComponent implements OnInit, OnDestroy {
   public timeIntervalControl: FormControl<number>;
-  public tableData: { [key: string]: string }[];
+  public tableData$: BehaviorSubject<{ [key: string]: string }[]>;
   public tableColumns: string[];
 
   private onDestroy$: Subject<void>;
+
   // Temporary for measurements
-  private timer: any;
+  private timer: number;
 
   constructor(private timeIntervalsService: TimeIntervalsService, private cdr: ChangeDetectorRef) {
+    this.timer = 0;
     this.tableColumns = [];
-    this.tableData = [];
     this.timeIntervalControl = new FormControl();
+    this.tableData$ = new BehaviorSubject<{ [key: string]: string }[]>([]);
     this.onDestroy$ = new Subject<void>();
   }
 
@@ -46,7 +48,7 @@ export class TimeIntervalComponent implements OnInit {
         switchMap((interval: number) => this.timeIntervalsService.getTableDataForInterval(interval)),
         takeUntil(this.onDestroy$)
       ).subscribe(({data, columns}: IntervalsTableDataResponse) => {
-        this.tableData = data;
+        this.tableData$.next(data);
         this.tableColumns = columns;
         this.cdr.markForCheck();
       })
@@ -54,8 +56,7 @@ export class TimeIntervalComponent implements OnInit {
 
   // Temporary for measurements
   public renderingFinished(): void {
-    // console.log('qwe')
-    // const time = performance.now() - this.timer;
-    // console.log('Timer:', 'Rendering', 'finished in', Math.round(time), 'ms');
+    const time = performance.now() - this.timer;
+    console.log('Timer:', 'Rendering', 'finished in', Math.round(time), 'ms');
   }
 }

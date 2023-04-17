@@ -1,13 +1,8 @@
 <app-time-interval-selector [timeIntervalControl]="timeIntervalControl"></app-time-interval-selector>
 <div class="table-container">
-    <!-- <app-custom-scroll-table 
-        [columnsToDisplay]="tableColumns" 
-        [tableData]="tableData" 
-        (onContentRendering)="renderingFinished()">
-    </app-custom-scroll-table> -->
     <app-virtual-scroll-table 
         [columnsToDisplay]="tableColumns" 
-        [tableData]="tableData" 
+        [tableData$]="tableData$" 
         (onContentRendering)="renderingFinished()">
     </app-virtual-scroll-table>
 </div>

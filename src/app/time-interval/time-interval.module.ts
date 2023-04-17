@@ -1,4 +1,3 @@
-import { CustomScrollTableModule } from './../shared/components/custom-scroll-table/custom-scroll-table.module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,7 +18,6 @@ import { TimeIntervalComponent } from './time-interval.component';
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
-    CustomScrollTableModule,
     VirtualScrollTableModule
   ],
   providers: [],

@@ -1,7 +1,8 @@
 import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter, Inject } from '@angular/core';
-import { map, Observable, of, combineLatest } from 'rxjs';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { map, Observable, combineLatest, tap, BehaviorSubject } from 'rxjs';
 import { TableVirtualScrollStrategy } from '../../services/table-vs-strategy.service';
+import { HorizontalScrollPagination } from './models/virtual-scroll.interface';
 
 @Component({
   selector: 'app-virtual-scroll-table',
@@ -11,10 +12,11 @@ import { TableVirtualScrollStrategy } from '../../services/table-vs-strategy.ser
     provide: VIRTUAL_SCROLL_STRATEGY,
     useClass: TableVirtualScrollStrategy,
   }],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class VirtualScrollTableComponent implements OnInit, OnChanges {
-  @Input() public tableData: { [key: string]: string }[] = [];
+  @Input() public tableData$: BehaviorSubject<{ [key: string]: string }[]>;
   @Input() public columnsToDisplay: string[] = [];
 
   @Output() onContentRendering = new EventEmitter();
@@ -22,18 +24,21 @@ export class VirtualScrollTableComponent implements OnInit, OnChanges {
   private BUFFER_SIZE = 3;
   private ROW_HEIGHT = 52;
   private HEADER_HEIGHT = 56;
-  private range = 0;
+  private WIDTH_SCROLL_BUFFER = 200;
+  private verticalScrollRange = 0;
 
   public GRID_HEIGHT = 600;
-  public startWidth: number = 0;
-  public widthLimit: number = 25;
-  public endWidth: number = 0;
+  public horizontalScrollData: HorizontalScrollPagination;
   public tableColumns: string[];
 
   public dataSource: Observable<{ [key: string]: string }[]>;
 
-  constructor(@Inject(VIRTUAL_SCROLL_STRATEGY) private readonly scrollStrategy: TableVirtualScrollStrategy) {
-    this.range = Math.ceil(this.GRID_HEIGHT / this.ROW_HEIGHT) + this.BUFFER_SIZE;
+  constructor(
+    @Inject(VIRTUAL_SCROLL_STRATEGY) private readonly scrollStrategy: TableVirtualScrollStrategy,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.horizontalScrollData = { start: 0, end: 40, limit: 40 };
+    this.verticalScrollRange = Math.ceil(this.GRID_HEIGHT / this.ROW_HEIGHT) + this.BUFFER_SIZE;
     this.tableColumns = [];
   }
 
@@ -42,7 +47,7 @@ export class VirtualScrollTableComponent implements OnInit, OnChanges {
   }
 
    ngOnChanges(changes: SimpleChanges): void {
-    if (changes['tableData']) {
+    if (changes['tableData$']) {
       this.onTableDataChange();
     }
 
@@ -52,45 +57,41 @@ export class VirtualScrollTableComponent implements OnInit, OnChanges {
   }
 
   private onTableDataChange(): void {
-    this.dataSource = combineLatest([of(this.tableData), this.scrollStrategy.scrolledIndexChange]).pipe(
+    this.dataSource = combineLatest([this.tableData$, this.scrollStrategy.scrolledIndexChange]).pipe(
       map((value: any) => {
         const start = Math.max(0, value[1] - this.BUFFER_SIZE);
-        const end = Math.min(value[0].length, value[1] + this.range);
+        const end = Math.min(value[0].length, value[1] + this.verticalScrollRange);
 
         return value[0].slice(start, end);
-      })
+      },
+      tap(() => this.cdr.detectChanges())
+      )
     );
   }
 
   private onColumnsChange(): void {
-    this.startWidth = 0;
-    this.endWidth = 25;
-    this.tableColumns = this.getTableColumns(this.startWidth, this.endWidth);
+    this.horizontalScrollData = { start: 0, end: 40, limit: 40 };
+    this.tableColumns = this.getTableColumns();
     this.updateWidthIndex();
   }
 
   public updateTableOnHorizontalScroll(event: any): void {
-    const tableViewWidth = event.target.offsetWidth;
-    const tableScrollWidth = event.target.scrollWidth;
-    const scrollLocation = event.target.scrollLeft;
+    const { offsetWidth, scrollWidth, scrollLeft } = event.target;
+    const widthLimit = scrollWidth - offsetWidth - this.WIDTH_SCROLL_BUFFER;
 
-    const buffer = 200;
-    const widthLimit = tableScrollWidth - tableViewWidth - buffer;
-
-    if (scrollLocation > widthLimit) {
-      let columns = this.getTableColumns(this.startWidth, this.endWidth)
+    if (scrollLeft > widthLimit) {
+      let columns = this.getTableColumns();
       this.tableColumns = [...this.tableColumns, ...columns];
       this.updateWidthIndex();
     }
   }
   
-  private getTableColumns(start: number, end: number): string[] {
-    return this.columnsToDisplay.filter((value, index) => index >= start && index < end);
+  private getTableColumns(): string[] {
+    return this.columnsToDisplay.filter((value, index) => index >= this.horizontalScrollData.start && index < this.horizontalScrollData.end);
   }
 
   public updateWidthIndex(): void {
-    this.startWidth = this.endWidth;
-    this.endWidth = this.widthLimit + this.startWidth;
+    this.horizontalScrollData.start = this.horizontalScrollData.end;
+    this.horizontalScrollData.end = this.horizontalScrollData.limit + this.horizontalScrollData.start;
   }
 }
-

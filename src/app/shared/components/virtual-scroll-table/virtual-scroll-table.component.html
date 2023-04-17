@@ -10,7 +10,7 @@
         </ng-container>
   
         <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
-        <ng-template let-row matRowDef cdkVirtualFor [matRowDefColumns]="tableColumns" [cdkVirtualForOf]="tableData">
+        <ng-template let-row matRowDef cdkVirtualFor [matRowDefColumns]="tableColumns" [cdkVirtualForOf]="tableData$ | async">
             <tr mat-row class="table__row"></tr>
         </ng-template>
     </table>
