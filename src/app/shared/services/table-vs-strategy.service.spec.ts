@@ -13,7 +13,7 @@ describe('TableVirtualScrollStrategy', () => {
 
     it ('Should call all nested methods inside attach() method', () => {
         spyOn(service, "onDataLengthChanged");
-        const updateContentSpy = spyOn<TableVirtualScrollStrategy, any>(service, 'updateContent');
+        const updateContentSpy = spyOn(service as any, 'updateContent');
         
         service.attach(viewport);
     
@@ -23,7 +23,7 @@ describe('TableVirtualScrollStrategy', () => {
     })
 
     it('Should call updateContent method', () => {
-        const updateContentSpy = spyOn<TableVirtualScrollStrategy, any>(service, 'updateContent');
+        const updateContentSpy = spyOn(service as any, 'updateContent');
 
         service.attach(viewport);
         service.onContentScrolled();
@@ -48,7 +48,7 @@ describe('TableVirtualScrollStrategy', () => {
         })
 
         service.attach(viewport);
-        spyOn<TableVirtualScrollStrategy, any>(service, 'updateContent').and.callThrough();
+        spyOn(service as any, 'updateContent').and.callThrough();
 
         expect(viewport.measureScrollOffset).toHaveBeenCalled();
         expect(viewport.setRenderedContentOffset).toHaveBeenCalledTimes(1);
@@ -57,7 +57,7 @@ describe('TableVirtualScrollStrategy', () => {
     it('Should exit without any functions called if viewport hasn\'t been attached', () => {
         viewport.measureScrollOffset = jasmine.createSpy().and.returnValue(0);
 
-        spyOn<TableVirtualScrollStrategy, any>(service, 'updateContent').and.callThrough();
+        spyOn(service as any, 'updateContent').and.callThrough();
 
         expect(viewport.measureScrollOffset).not.toHaveBeenCalled();
         expect(viewport.setRenderedContentOffset).not.toHaveBeenCalled();

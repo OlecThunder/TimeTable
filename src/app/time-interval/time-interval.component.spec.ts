@@ -1,18 +1,16 @@
-import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { VirtualScrollTableModule } from '../shared/components/virtual-scroll-table/virtual-scroll-table.module';
-import { TimeIntervalSelectorComponent } from '../time-interval-selector/time-interval-selector.component';
-import { TimeIntervalsService } from './services/time-interval.service';
 import { TimeIntervalComponent } from './time-interval.component';
+import { VirtualScrollTableModule } from '../shared/components/virtual-scroll-table';
+import { TimeIntervalSelectorComponent } from './time-interval-selector';
+import { TimeIntervalsService } from './services';
 
 describe('TimeIntervalComponent', () => {
   let component: TimeIntervalComponent;
   let fixture: ComponentFixture<TimeIntervalComponent>;
   let timeIntervalsService: TimeIntervalsService;
-  let changeDetectorRef: ChangeDetectorRef;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -33,11 +31,10 @@ describe('TimeIntervalComponent', () => {
     fixture = TestBed.createComponent(TimeIntervalComponent);
     component = fixture.componentInstance;
     timeIntervalsService = TestBed.get(TimeIntervalsService);
-    changeDetectorRef = fixture.debugElement.injector.get(ChangeDetectorRef);
   });
 
   it('Should subscribe on interval change', () => {
-    const subscriptionSpy = spyOn<TimeIntervalComponent, any>(component, 'subscribeOnIntervalChange')
+    const subscriptionSpy = spyOn(component as any, 'subscribeOnIntervalChange')
 
     fixture.detectChanges();
 
@@ -45,7 +42,7 @@ describe('TimeIntervalComponent', () => {
   });
 
   it('Should set initial formControl value to 5', () => {
-    spyOn<TimeIntervalComponent, any>(component, 'subscribeOnIntervalChange')
+    spyOn(component as any, 'subscribeOnIntervalChange')
 
     fixture.detectChanges();
 
@@ -53,7 +50,6 @@ describe('TimeIntervalComponent', () => {
   });
 
   it('Should set table data and columns values on select init', fakeAsync(() => {
-    const detectChangesSpy = spyOn((<any>fixture.componentInstance).cdr, 'markForCheck').and.callThrough();
     const getTableDataSpy = spyOn(timeIntervalsService, 'getTableDataForInterval').and.callThrough();
 
     expect(component.tableColumns).toEqual([]);
@@ -63,13 +59,11 @@ describe('TimeIntervalComponent', () => {
     tick(1);
 
     expect(getTableDataSpy).toHaveBeenCalledWith(5);
-    expect(detectChangesSpy).toHaveBeenCalledTimes(1);
     expect(component.tableColumns.length).toBe(287);
     expect(component.tableData$.getValue().length).toBe(100);
   }));
 
   it('Should set table data and columns values on select control value changes', fakeAsync(() => {
-    const detectChangesSpy = spyOn((<any>fixture.componentInstance).cdr, 'markForCheck').and.callThrough();
     const getTableDataSpy = spyOn(timeIntervalsService, 'getTableDataForInterval').and.callThrough();
 
     fixture.detectChanges();
@@ -77,7 +71,6 @@ describe('TimeIntervalComponent', () => {
     tick(1);
 
     expect(getTableDataSpy).toHaveBeenCalledWith(30);
-    expect(detectChangesSpy).toHaveBeenCalledTimes(2);
     expect(component.tableColumns.length).toBe(47);
     expect(component.tableData$.getValue().length).toBe(100);
   }));

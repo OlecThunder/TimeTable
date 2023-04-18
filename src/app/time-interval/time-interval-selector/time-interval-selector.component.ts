@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { TimeIntervalsOptions } from './models/time-interval.constants';
-import { TimeIntervals } from './models/time-intervals.interface';
+import { TimeIntervals, TimeIntervalsOptions } from './models';
 
 @Component({
   selector: 'app-time-interval-selector',
@@ -10,11 +9,7 @@ import { TimeIntervals } from './models/time-intervals.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimeIntervalSelectorComponent {
-  @Input() timeIntervalControl: FormControl<number> = new FormControl();
+  @Input() timeIntervalControl = new FormControl({ value: 5, disabled: false });
 
-  public availableTimeIntervals: TimeIntervals[];
-
-  constructor() {
-    this.availableTimeIntervals = TimeIntervalsOptions;
-  }
+  public availableTimeIntervals: TimeIntervals[] = TimeIntervalsOptions;
 }

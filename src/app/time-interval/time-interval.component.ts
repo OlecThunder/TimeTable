@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { filter, Subject, switchMap, tap, takeUntil, BehaviorSubject } from 'rxjs';
-import { IntervalsTableDataResponse } from '../time-interval-selector/models/time-intervals.interface';
-import { TimeIntervalsService } from './services/time-interval.service';
+import { filter, Subject, switchMap, takeUntil, BehaviorSubject, startWith } from 'rxjs';
+import { TimeIntervalsService } from './services';
+import { IntervalsTableDataResponse } from './time-interval-selector';
 
 @Component({
   selector: 'app-time-interval',
@@ -11,22 +11,20 @@ import { TimeIntervalsService } from './services/time-interval.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TimeIntervalComponent implements OnInit, OnDestroy {
-  public timeIntervalControl: FormControl<number>;
+  public timeIntervalControl = new FormControl({ value: 5, disabled: false });
   public tableData$: BehaviorSubject<{ [key: string]: string }[]>;
   public tableColumns: string[];
 
   private onDestroy$: Subject<void>;
 
-  constructor(private timeIntervalsService: TimeIntervalsService, private cdr: ChangeDetectorRef) {
+  constructor(private timeIntervalsService: TimeIntervalsService) {
     this.tableColumns = [];
-    this.timeIntervalControl = new FormControl();
     this.tableData$ = new BehaviorSubject<{ [key: string]: string }[]>([]);
     this.onDestroy$ = new Subject<void>();
   }
 
   ngOnInit(): void {
     this.subscribeOnIntervalChange();
-    this.timeIntervalControl.setValue(5);
   }
 
   ngOnDestroy(): void {
@@ -37,13 +35,13 @@ export class TimeIntervalComponent implements OnInit, OnDestroy {
   private subscribeOnIntervalChange(): void {
     this.timeIntervalControl.valueChanges
       .pipe(
+        startWith(5),
         filter(Boolean),
         switchMap((interval: number) => this.timeIntervalsService.getTableDataForInterval(interval)),
         takeUntil(this.onDestroy$)
       ).subscribe(({data, columns}: IntervalsTableDataResponse) => {
         this.tableData$.next(data);
         this.tableColumns = columns;
-        this.cdr.markForCheck();
       })
   }
 }

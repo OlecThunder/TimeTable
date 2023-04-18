@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { IntervalsTableDataResponse } from '../../time-interval-selector/models/time-intervals.interface';
-import { generateMockTableData } from '../../shared/utils/table-data-mock-generator';
+import { generateMockTableData } from '../../shared/utils';
+import { IntervalsTableDataResponse } from '../time-interval-selector';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TimeIntervalsService {
-  private defaultAmmountOfTableItems: number;
+  private defaultAmmountOfTableItems = 100;
 
-  constructor() {
-    this.defaultAmmountOfTableItems = 100;
-  }
+  constructor() {}
 
   public getTableDataForInterval(interval: number, itemsAmmount: number = this.defaultAmmountOfTableItems): Observable<IntervalsTableDataResponse> {
     return of(generateMockTableData(itemsAmmount, interval));

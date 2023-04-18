@@ -1,8 +1,8 @@
 import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
 import { Component, Input, OnInit, OnChanges, SimpleChanges, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { map, Observable, combineLatest, tap, BehaviorSubject } from 'rxjs';
-import { TableVirtualScrollStrategy } from '../../services/table-vs-strategy.service';
-import { HorizontalScrollPagination } from './models/virtual-scroll.interface';
+import { TableVirtualScrollStrategy } from '../../services';
+import { HorizontalScrollPagination } from './models';
 
 @Component({
   selector: 'app-virtual-scroll-table',
@@ -23,22 +23,18 @@ export class VirtualScrollTableComponent implements OnInit, OnChanges {
   private ROW_HEIGHT = 52;
   private HEADER_HEIGHT = 56;
   private WIDTH_SCROLL_BUFFER = 200;
-  private verticalScrollRange = 0;
-
   public GRID_HEIGHT = 600;
-  public horizontalScrollData: HorizontalScrollPagination;
-  public tableColumns: string[];
+
+  private verticalScrollRange = Math.ceil(this.GRID_HEIGHT / this.ROW_HEIGHT) + this.BUFFER_SIZE;
+  public horizontalScrollData: HorizontalScrollPagination = { start: 0, end: 40, limit: 40 };
+  public tableColumns: string[] = [];
 
   public dataSource: Observable<{ [key: string]: string }[]>;
 
   constructor(
     @Inject(VIRTUAL_SCROLL_STRATEGY) private readonly scrollStrategy: TableVirtualScrollStrategy,
     private cdr: ChangeDetectorRef
-  ) {
-    this.horizontalScrollData = { start: 0, end: 40, limit: 40 };
-    this.verticalScrollRange = Math.ceil(this.GRID_HEIGHT / this.ROW_HEIGHT) + this.BUFFER_SIZE;
-    this.tableColumns = [];
-  }
+  ) {}
 
   ngOnInit() {
     this.scrollStrategy.setScrollHeight(this.ROW_HEIGHT, this.HEADER_HEIGHT);
@@ -84,7 +80,7 @@ export class VirtualScrollTableComponent implements OnInit, OnChanges {
   }
   
   private getTableColumns(): string[] {
-    return this.columnsToDisplay.filter((value, index) => index >= this.horizontalScrollData.start && index < this.horizontalScrollData.end);
+    return this.columnsToDisplay.filter((_, index) => index >= this.horizontalScrollData.start && index < this.horizontalScrollData.end);
   }
 
   public updateWidthIndex(): void {

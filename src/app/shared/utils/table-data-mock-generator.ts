@@ -1,5 +1,5 @@
 import * as dayjs from "dayjs";
-import { IntervalsTableDataResponse } from "../../time-interval-selector/models/time-intervals.interface";
+import { IntervalsTableDataResponse } from "../../time-interval";
 
 export function generateMockTableData (dataPointsAmmount: number = 50, timeRange: number, timeUnits: dayjs.ManipulateType = 'minute'): IntervalsTableDataResponse {
     const startOfNextDay = dayjs().startOf('day').add(1, 'day');
