@@ -15,22 +15,21 @@ describe('TimeIntervalSelectorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TimeIntervalSelectorComponent ],
-      imports: [BrowserAnimationsModule, FormsModule, ReactiveFormsModule, MatSelectModule]
-    })
-    .compileComponents();
+      declarations: [TimeIntervalSelectorComponent],
+      imports: [BrowserAnimationsModule, FormsModule, ReactiveFormsModule, MatSelectModule],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TimeIntervalSelectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     loader = TestbedHarnessEnvironment.loader(fixture);
-    select = await loader.getHarness(MatSelectHarness.with({ selector : '.time-interval__select' }));
+    select = await loader.getHarness(MatSelectHarness.with({ selector: '.time-interval__select' }));
   });
 
   it('Should display three MatSelect options', async () => {
     await (await select.host()).click();
 
-    const actual = await (await select.getOptions()).map(async (opt) => await opt.getText());
+    const actual = await (await select.getOptions()).map(async opt => await opt.getText());
 
     expect(actual.length).toBe(3);
     expect(await actual[0]).toBe('5 minutes');

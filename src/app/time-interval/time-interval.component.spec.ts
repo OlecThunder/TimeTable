@@ -14,19 +14,10 @@ describe('TimeIntervalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TimeIntervalComponent, TimeIntervalSelectorComponent ],
-      imports: [
-        BrowserAnimationsModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatSelectModule,
-        VirtualScrollTableModule
-      ],
-      providers: [
-        TimeIntervalsService
-      ]
-    })
-    .compileComponents();
+      declarations: [TimeIntervalComponent, TimeIntervalSelectorComponent],
+      imports: [BrowserAnimationsModule, FormsModule, ReactiveFormsModule, MatSelectModule, VirtualScrollTableModule],
+      providers: [TimeIntervalsService],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TimeIntervalComponent);
     component = fixture.componentInstance;
@@ -34,7 +25,7 @@ describe('TimeIntervalComponent', () => {
   });
 
   it('Should subscribe on interval change', () => {
-    const subscriptionSpy = spyOn(component as any, 'subscribeOnIntervalChange')
+    const subscriptionSpy = spyOn(component as any, 'subscribeOnIntervalChange');
 
     fixture.detectChanges();
 
@@ -42,8 +33,6 @@ describe('TimeIntervalComponent', () => {
   });
 
   it('Should set initial formControl value to 5', () => {
-    spyOn(component as any, 'subscribeOnIntervalChange')
-
     fixture.detectChanges();
 
     expect(component.timeIntervalControl.getRawValue()).toBe(5);

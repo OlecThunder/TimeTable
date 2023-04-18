@@ -6,7 +6,7 @@ import { TimeIntervals, TimeIntervalsOptions } from './models';
   selector: 'app-time-interval-selector',
   templateUrl: './time-interval-selector.component.html',
   styleUrls: ['./time-interval-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimeIntervalSelectorComponent {
   @Input() timeIntervalControl = new FormControl({ value: 5, disabled: false });

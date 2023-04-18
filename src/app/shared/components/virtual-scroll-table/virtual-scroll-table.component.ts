@@ -1,5 +1,14 @@
 import { VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  Inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { map, Observable, combineLatest, tap, BehaviorSubject } from 'rxjs';
 import { TableVirtualScrollStrategy } from '../../services';
 import { HorizontalScrollPagination } from './models';
@@ -8,13 +17,14 @@ import { HorizontalScrollPagination } from './models';
   selector: 'app-virtual-scroll-table',
   templateUrl: './virtual-scroll-table.component.html',
   styleUrls: ['./virtual-scroll-table.component.scss'],
-  providers: [{
-    provide: VIRTUAL_SCROLL_STRATEGY,
-    useClass: TableVirtualScrollStrategy,
-  }],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  providers: [
+    {
+      provide: VIRTUAL_SCROLL_STRATEGY,
+      useClass: TableVirtualScrollStrategy,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class VirtualScrollTableComponent implements OnInit, OnChanges {
   @Input() public tableData$: BehaviorSubject<{ [key: string]: string }[]>;
   @Input() public columnsToDisplay: string[] = [];
@@ -40,7 +50,7 @@ export class VirtualScrollTableComponent implements OnInit, OnChanges {
     this.scrollStrategy.setScrollHeight(this.ROW_HEIGHT, this.HEADER_HEIGHT);
   }
 
-   ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['tableData$']) {
       this.onTableDataChange();
     }
@@ -73,14 +83,15 @@ export class VirtualScrollTableComponent implements OnInit, OnChanges {
     const widthLimit = scrollWidth - offsetWidth - this.WIDTH_SCROLL_BUFFER;
 
     if (scrollLeft > widthLimit) {
-      let columns = this.getTableColumns();
-      this.tableColumns = [...this.tableColumns, ...columns];
+      this.tableColumns = [...this.tableColumns, ...this.getTableColumns()];
       this.updateWidthIndex();
     }
   }
-  
+
   private getTableColumns(): string[] {
-    return this.columnsToDisplay.filter((_, index) => index >= this.horizontalScrollData.start && index < this.horizontalScrollData.end);
+    return this.columnsToDisplay.filter(
+      (_, index) => index >= this.horizontalScrollData.start && index < this.horizontalScrollData.end
+    );
   }
 
   public updateWidthIndex(): void {

@@ -4,7 +4,7 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
-import { MatRowHarness, MatTableHarness } from '@angular/material/table/testing'
+import { MatRowHarness, MatTableHarness } from '@angular/material/table/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { BehaviorSubject } from 'rxjs';
@@ -26,7 +26,7 @@ describe('VirtualScrollTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ VirtualScrollTableComponent ],
+      declarations: [VirtualScrollTableComponent],
       imports: [
         BrowserAnimationsModule,
         FormsModule,
@@ -34,14 +34,15 @@ describe('VirtualScrollTableComponent', () => {
         MatTableModule,
         ScrollingModule,
         CdkTableModule,
-        UnixIntoReadablePipeModule
+        UnixIntoReadablePipeModule,
       ],
-      providers: [{
-        provide: VIRTUAL_SCROLL_STRATEGY,
-        useClass: TableVirtualScrollStrategy,
-      }],
-    })
-    .compileComponents();
+      providers: [
+        {
+          provide: VIRTUAL_SCROLL_STRATEGY,
+          useClass: TableVirtualScrollStrategy,
+        },
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(VirtualScrollTableComponent);
     component = fixture.componentInstance;
@@ -58,16 +59,20 @@ describe('VirtualScrollTableComponent', () => {
       columnsToDisplay: new SimpleChange([], inputData.columns, false),
       tableData$: new SimpleChange(null, new BehaviorSubject([]), true),
     });
-    
+
     component.tableData$.next(inputData.data);
     tableVirtualScrollStrategy.indexChange.next(0);
 
-    table = await loader.getHarness(MatTableHarness.with({ selector : '.table' }));
+    table = await loader.getHarness(MatTableHarness.with({ selector: '.table' }));
 
     const headerRowsHarnesses = await table.getHeaderRows();
     const allVisibleRowsHarnesses = await table.getRows();
-    const allVisibleRows = await Promise.all(allVisibleRowsHarnesses.map((rowHarness: MatRowHarness) => rowHarness.getCellTextByColumnName()));
-    const allVisibleRowsWithColumns = await Promise.all(allVisibleRowsHarnesses.map((rowHarness: MatRowHarness) => rowHarness.getCells()));
+    const allVisibleRows = await Promise.all(
+      allVisibleRowsHarnesses.map((rowHarness: MatRowHarness) => rowHarness.getCellTextByColumnName())
+    );
+    const allVisibleRowsWithColumns = await Promise.all(
+      allVisibleRowsHarnesses.map((rowHarness: MatRowHarness) => rowHarness.getCells())
+    );
     const firstColumnInsideFirstRow = Object.values(allVisibleRows[0])[0];
 
     expect(headerRowsHarnesses.length).toBe(1);
@@ -78,7 +83,7 @@ describe('VirtualScrollTableComponent', () => {
 
   it('Should get table columns and update indexes on columns change', () => {
     const getTableDataSpy = spyOn(component as any, 'getTableColumns').and.callThrough();
-    const updateWidthIndexSpy = spyOn(component as any, 'updateWidthIndex').and.callThrough();
+    const updateWidthIndexSpy = spyOn(component, 'updateWidthIndex').and.callThrough();
 
     component.columnsToDisplay = inputData.columns;
     component.ngOnChanges({
@@ -91,34 +96,34 @@ describe('VirtualScrollTableComponent', () => {
     expect(updateWidthIndexSpy).toHaveBeenCalledTimes(1);
   });
 
-  describe("Columns workflow", () => {
+  describe('Columns workflow', () => {
     beforeEach(() => {
       component.columnsToDisplay = inputData.columns;
       component.ngOnChanges({
         columnsToDisplay: new SimpleChange([], inputData.columns, false),
       });
       fixture.detectChanges();
-    })
+    });
 
     it('Should not update table columns if current columns fits the screen', () => {
       const getTableDataSpy = spyOn(component as any, 'getTableColumns').and.callThrough();
-      const updateWidthIndexSpy = spyOn(component as any, 'updateWidthIndex').and.callThrough();
+      const updateWidthIndexSpy = spyOn(component, 'updateWidthIndex').and.callThrough();
       const columnsBeforeExecution = [...component.tableColumns];
-  
+
       component.updateTableOnHorizontalScroll(scrollEventMockWithoutReload);
-  
+
       expect(columnsBeforeExecution).toEqual(component.tableColumns);
       expect(getTableDataSpy).not.toHaveBeenCalled();
       expect(updateWidthIndexSpy).not.toHaveBeenCalled();
     });
-  
-    it('Should update table columns if current columns doesn\'t fit the screen', () => {
+
+    it("Should update table columns if current columns doesn't fit the screen", () => {
       const getTableDataSpy = spyOn(component as any, 'getTableColumns').and.callThrough();
-      const updateWidthIndexSpy = spyOn(component as any, 'updateWidthIndex').and.callThrough();
+      const updateWidthIndexSpy = spyOn(component, 'updateWidthIndex').and.callThrough();
       const columnsBeforeExecution = [...component.tableColumns];
-  
+
       component.updateTableOnHorizontalScroll(scrollEventMockWithReload);
-  
+
       expect(columnsBeforeExecution).not.toEqual(component.tableColumns);
       expect(getTableDataSpy).toHaveBeenCalled();
       expect(updateWidthIndexSpy).toHaveBeenCalled();
@@ -130,5 +135,5 @@ describe('VirtualScrollTableComponent', () => {
       expect(component.horizontalScrollData.start).toBe(80);
       expect(component.horizontalScrollData.end).toBe(120);
     });
-  })
+  });
 });

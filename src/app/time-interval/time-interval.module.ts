@@ -8,17 +8,14 @@ import { VirtualScrollTableModule } from '../shared/components/virtual-scroll-ta
 import { TimeIntervalSelectorComponent } from './time-interval-selector';
 
 @NgModule({
-  declarations: [
-    TimeIntervalComponent,
-    TimeIntervalSelectorComponent
-  ],
+  declarations: [TimeIntervalComponent, TimeIntervalSelectorComponent],
   imports: [
     CommonModule,
     TimeIntervalRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
-    VirtualScrollTableModule
-  ]
+    VirtualScrollTableModule,
+  ],
 })
-export class TimeIntervalModule { }
+export class TimeIntervalModule {}

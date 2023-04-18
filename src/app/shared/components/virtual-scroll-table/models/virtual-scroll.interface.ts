@@ -1,5 +1,5 @@
 export interface HorizontalScrollPagination {
-    start: number;
-    end: number;
-    limit: number;
+  start: number;
+  end: number;
+  limit: number;
 }

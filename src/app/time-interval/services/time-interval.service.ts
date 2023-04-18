@@ -4,14 +4,15 @@ import { generateMockTableData } from '../../shared/utils';
 import { IntervalsTableDataResponse } from '../time-interval-selector';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TimeIntervalsService {
   private defaultAmmountOfTableItems = 100;
 
-  constructor() {}
-
-  public getTableDataForInterval(interval: number, itemsAmmount: number = this.defaultAmmountOfTableItems): Observable<IntervalsTableDataResponse> {
+  public getTableDataForInterval(
+    interval: number,
+    itemsAmmount: number = this.defaultAmmountOfTableItems
+  ): Observable<IntervalsTableDataResponse> {
     return of(generateMockTableData(itemsAmmount, interval));
   }
 }

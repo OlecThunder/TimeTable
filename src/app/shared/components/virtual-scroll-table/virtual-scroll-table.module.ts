@@ -9,9 +9,7 @@ import { UnixIntoReadablePipeModule } from '../../pipes/unix-into-readable';
 import { TableVirtualScrollStrategy } from '../../services';
 
 @NgModule({
-  declarations: [
-    VirtualScrollTableComponent,
-  ],
+  declarations: [VirtualScrollTableComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -19,13 +17,9 @@ import { TableVirtualScrollStrategy } from '../../services';
     MatTableModule,
     ScrollingModule,
     CdkTableModule,
-    UnixIntoReadablePipeModule
+    UnixIntoReadablePipeModule,
   ],
-  providers: [
-    TableVirtualScrollStrategy
-  ],
-  exports: [
-    VirtualScrollTableComponent
-  ]
+  providers: [TableVirtualScrollStrategy],
+  exports: [VirtualScrollTableComponent],
 })
-export class VirtualScrollTableModule { }
+export class VirtualScrollTableModule {}

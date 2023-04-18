@@ -8,7 +8,7 @@ import { IntervalsTableDataResponse } from './time-interval-selector';
   selector: 'app-time-interval',
   templateUrl: './time-interval.component.html',
   styleUrls: ['./time-interval.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimeIntervalComponent implements OnInit, OnDestroy {
   public timeIntervalControl = new FormControl({ value: 5, disabled: false });
@@ -39,9 +39,10 @@ export class TimeIntervalComponent implements OnInit, OnDestroy {
         filter(Boolean),
         switchMap((interval: number) => this.timeIntervalsService.getTableDataForInterval(interval)),
         takeUntil(this.onDestroy$)
-      ).subscribe(({data, columns}: IntervalsTableDataResponse) => {
+      )
+      .subscribe(({ data, columns }: IntervalsTableDataResponse) => {
         this.tableData$.next(data);
         this.tableColumns = columns;
-      })
+      });
   }
 }

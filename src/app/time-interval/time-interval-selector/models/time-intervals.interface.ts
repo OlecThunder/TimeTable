@@ -1,9 +1,9 @@
 export interface TimeIntervals {
-    readonly label: string;
-    readonly value: number;
+  readonly label: string;
+  readonly value: number;
 }
 
 export interface IntervalsTableDataResponse {
-    readonly data: { [key: string]: string }[];
-    readonly columns: string[];
+  readonly data: { [key: string]: string }[];
+  readonly columns: string[];
 }
